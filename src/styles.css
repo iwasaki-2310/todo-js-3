@@ -1,3 +1,39 @@
 body {
   font-family: sans-serif;
 }
+
+.input-area {
+  padding: 20px;
+  background-color: rgb(118, 210, 240);
+}
+.incomplete-area {
+  padding: 5px 10px;
+  background-color: rgb(120, 226, 155);
+}
+.complete-area {
+  padding: 5px 10px;
+  background-color: rgb(241, 217, 163);
+}
+
+.ttl {
+  text-align: center;
+  color: gray;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+}
+
+.btn-wrap {
+  margin: 0 0 0 10px;
+}
+
+button:hover {
+  background-color: pink;
+  color: white;
+}
+
+.btn + .btn {
+  margin: 0 0 0 5px;
+}

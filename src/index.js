@@ -1,104 +1,85 @@
 import "./styles.css";
-const addButton = document.getElementById('add-button');//追加ボタン
 
-// 【ファンクション】入力した内容が未完了リストに追加される
+// タスク追加
 const onClickAdd = () => {
   const inputText = document.getElementById('add-text').value;
-  document.getElementById('add-text').value = "";
-
   createIncompleteList(inputText);
 }
 
-// 【ファンクション】未完了リストから指定の要素を削除する関数
-const deleteFromIncompleteList = (target) => {
-  document.getElementById('incomplete-list').removeChild(target);
-}
+// 未完了リスト追加
+const createIncompleteList = (target) => {
+  // 【定義】未完了リストの定義
+  const incompleteList = document.getElementById('incomplete-list');
+  const completeList = document.getElementById('complete-list');
 
-//【ファンクション】未完了リストに追加する関数
-// 入力したTODOを追加する時または完了リストから戻す際に使用。
-// 未完了リストのTODOとして必要なエレメントや機能をここに全て記述している。
-// 「完了」ボタン、「削除」ボタンの機能も定義
-const createIncompleteList = (text) => {
-  // li生成
-  const li = document.createElement('li');
-  li.className = 'item';
+  // 【定義】リストアイテムの定義
+  const incompleteItem = document.createElement('li');
+  incompleteItem.className = "item";
 
-  // p生成
-  const p = document.createElement('p');
-  p.className = 'task';
-  p.innerText = text;
+  // 【定義】タスクテキストの取得
+  const taskText =  document.createElement('p');
+  taskText.className = "task-text";
+  taskText.innerText = target;
 
-  //button（完了）タグ生成
+  // 【定義】ボタンの定義
+  const btnWrap = document.createElement('div');
   const completeButton = document.createElement('button');
-  completeButton.className = "btn";
-  completeButton.innerText = "完了";
-
-  //button（削除）タグ生成
   const deleteButton = document.createElement('button');
-  deleteButton.className = "btn";
-  deleteButton.innerText = "削除";
+  const backButton = document.createElement('button');
 
-  btnWrap = document.createElement('div');
   btnWrap.className = "btn-wrap";
+  completeButton.className = "btn";
+  deleteButton.className = "btn";
+  backButton.className = "btn";
+  
+  completeButton.innerText = "完了";
+  deleteButton.innerText = "削除";
+  backButton.innerText = "戻す";
+
   btnWrap.appendChild(completeButton);
   btnWrap.appendChild(deleteButton);
+  
+  // 【アクション】パーツの追加
+  incompleteList.appendChild(incompleteItem);
+  incompleteItem.appendChild(taskText);
+  incompleteItem.appendChild(btnWrap);
 
-  //liの子要素に各要素を設定
-  li.appendChild(p);
-  li.appendChild(btnWrap);
+  // 【ファンクション】タスク削除
+  const deleteFromAnyList = (button, target) => {
+    const deleteTarget = button.parentNode.parentNode;
+    target.removeChild(deleteTarget);
+  }
 
-  // 未完了リストに追加
-  const ul = document.getElementById('incomplete-list');//ulタグ
-  ul.appendChild(li);
-
-  //【発火イベント】アイテム削除
-  deleteButton.addEventListener('click', () => {
-    const deleteTarget = deleteButton.parentNode.parentNode;
-    deleteFromIncompleteList(deleteTarget);
-  });
-
-  //【発火イベント】完了リストへ移行
-  completeButton.addEventListener('click', () => {
-    // 未完了リストから削除
-    const completeTarget = completeButton.parentNode.parentNode;
-    deleteFromIncompleteList(completeTarget);
-
-    // TODOのテキスト取得
-    const text = completeTarget.firstElementChild.innerText;
-
-    // li以下を初期化
-    completeTarget.textContent = null;
-
-    // 【定義】liタグ>テキストタグ
-    const p = document.createElement('p');
-    p.className = 'task';
-    p.innerText = text;
-
-    // 【定義】liタグ>ボタンタグ
+  // 【発火】タスク完了
+  completeButton.addEventListener('click', () =>{
+    const completeTaskText = document.createElement('p');
+    completeTaskText.className = "task-text";
+    completeTaskText.innerText = completeButton.parentNode.parentNode.firstChild.innerText;
+    const completeItem = document.createElement('li');
     const btnWrap = document.createElement('div');
-    const backButton = document.createElement('button');
-    backButton.innerText = "戻す";
+
+    completeItem.className = "item";
     btnWrap.className = "btn-wrap";
+
     btnWrap.appendChild(backButton);
 
-    // 【発火イベント】「戻す」ボタンが押されたらliタグを完了リストから削除
-    backButton.addEventListener('click', () => {
-      const deleteTarget = backButton.parentNode.parentNode;
-      document.getElementById('complete-list').removeChild(deleteTarget);
+    completeList.appendChild(completeItem);
+    completeItem.appendChild(completeTaskText);
+    completeItem.appendChild(btnWrap);
+    
+    deleteFromAnyList(completeButton, incompleteList);//削除
+  });
 
-      //テキスト取得
-      const text = deleteTarget.firstChild.innerText;
-      createIncompleteList(text);
-    });
+  //【発火】タスクの削除
+  deleteButton.addEventListener('click', () =>{deleteFromAnyList(deleteButton, incompleteList)});
 
-    // 【定義】liタグの子要素に各タグを設定
-    completeTarget.appendChild(p);
-    completeTarget.appendChild(btnWrap);
-
-    // 【アクション】完了リストへ移行
-    const completeList = document.getElementById('complete-list');
-    completeList.appendChild(completeTarget);
+  // 【発火】タスク戻し
+  backButton.addEventListener('click', () => {
+    deleteFromAnyList(backButton, completeList);
+    const completeTaskTxt = backButton.parentNode.parentNode.firstChild.innerText;
+    createIncompleteList(completeTaskTxt);
   });
 }
 
-addButton.addEventListener('click', () => onClickAdd());
+const addButton = document.getElementById('add-button');
+addButton.addEventListener('click', () => {onClickAdd()}); 

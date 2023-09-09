@@ -15,6 +15,9 @@ const deleteFromIncompleteList = (target) => {
 }
 
 //【ファンクション】未完了リストに追加する関数
+// 入力したTODOを追加する時または完了リストから戻す際に使用。
+// 未完了リストのTODOとして必要なエレメントや機能をここに全て記述している。
+// 「完了」ボタン、「削除」ボタンの機能も定義
 const createIncompleteList = (text) => {
   // li生成
   const li = document.createElement('li');
